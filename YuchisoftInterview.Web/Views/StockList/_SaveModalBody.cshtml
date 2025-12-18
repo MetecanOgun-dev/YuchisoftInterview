@@ -1,0 +1,54 @@
+﻿@model YuchisoftTest.Web.Models.StockList.StockListSaveVm
+
+@{
+    bool isEdit = Model.Id > 0;
+    string title = isEdit ? "Stok Güncelle" : "Yeni Stok";
+    string btnText = isEdit ? "Güncelle" : "Kaydet";
+}
+
+<h6 class="mb-3">@title</h6>
+
+<form id="saveStockListForm" method="post" asp-controller="StockList" asp-action="SaveStockList">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    <div class="row g-3">
+
+        <div class="col-md-12">
+            <label class="form-label">Stok Birimi</label>
+            <select class="form-select" asp-for="StockUnitId" asp-items="Model.StockUnitOptions"></select>
+            <span class="text-danger" asp-validation-for="StockUnitId"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Miktar</label>
+            <input class="form-control" asp-for="Quantity" />
+            <span class="text-danger" asp-validation-for="Quantity"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Kritik Miktar</label>
+            <input class="form-control" asp-for="CriticalQuantity" />
+            <span class="text-danger" asp-validation-for="CriticalQuantity"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Raf Bilgisi</label>
+            <input class="form-control" asp-for="ShelfInfo" />
+            <span class="text-danger" asp-validation-for="ShelfInfo"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Kabin Bilgisi</label>
+            <input class="form-control" asp-for="CabinetInfo" />
+            <span class="text-danger" asp-validation-for="CabinetInfo"></span>
+        </div>
+
+
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+        <button type="submit" class="btn btn-primary">@btnText</button>
+    </div>
+</form>

@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using YuchisoftInterview.Web.Models;
+using YuchisoftTest.Application.Interfaces.Repositories;
+using YuchisoftTest.Web.Models.ErrorPage;
 
-namespace YuchisoftInterview.Web.Controllers
+namespace YuchisoftTest.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IErrorLogRepository _errorLogRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IErrorLogRepository errorLogRepository)
         {
-            _logger = logger;
+            _errorLogRepository = errorLogRepository;
         }
 
         public IActionResult Index()
@@ -23,10 +23,19 @@ namespace YuchisoftInterview.Web.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpGet]
+        public async Task<IActionResult> Error(string traceId)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (string.IsNullOrWhiteSpace(traceId))
+                return View(new ErrorPageVm { TraceId = HttpContext.TraceIdentifier });
+
+            var logs = await _errorLogRepository.GetByTraceIdAsync(traceId);
+
+            return View(new ErrorPageVm
+            {
+                TraceId = traceId,
+                Logs = logs
+            });
         }
     }
 }

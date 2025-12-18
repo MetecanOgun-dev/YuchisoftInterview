@@ -1,0 +1,87 @@
+﻿@model YuchisoftTest.Web.Models.StockUnits.StockUnitSaveVm
+@using YuchisoftTest.Domain.Entity
+@using static YuchisoftTest.Domain.Enums.Enums;
+
+@{
+    bool isEdit = Model.Id > 0;
+    string title = isEdit ? "Stok Birimini Güncelle" : "Yeni Stok Birimi";
+    string btnText = isEdit ? "Güncelle" : "Kaydet";
+}
+
+<h6 class="mb-3">@title</h6>
+
+<form id="saveStockUnitForm" method="post" asp-controller="StockUnit" asp-action="SaveStockUnit">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    <div class="row g-3">
+
+        <div class="col-md-6">
+            <label class="form-label">Stok Tipi*</label>
+            <select class="form-select" asp-for="StockTypeId" asp-items="Model.StockTypeOptions"></select>
+            <span class="text-danger" asp-validation-for="StockTypeId"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Birim Kodu*</label>
+            <input class="form-control" asp-for="UnitCode" />
+            <span class="text-danger" asp-validation-for="UnitCode"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Tür*</label>
+            <select class="form-select" asp-for="QuantityUnit">
+                @foreach (QuantityUnit q in Enum.GetValues(typeof(QuantityUnit)))
+                {
+                    <option value="@((int)q)">@q</option>
+                }
+            </select>
+            <span class="text-danger" asp-validation-for="QuantityUnit"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Açıklama*</label>
+            <input class="form-control" asp-for="Description" />
+            <span class="text-danger" asp-validation-for="Description"></span>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Alış Fiyatı*</label>
+            <input class="form-control" asp-for="PurchasePrice" />
+            <span class="text-danger" asp-validation-for="PurchasePrice"></span>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Alış Birimi*</label>
+            <select class="form-select" asp-for="PurchaseCurrency">
+                @foreach (Currency c in Enum.GetValues(typeof(Currency)))
+                {
+                    <option value="@((int)c)">@c</option>
+                }
+            </select>
+            <span class="text-danger" asp-validation-for="PurchaseCurrency"></span>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Satış Fiyatı</label>
+            <input class="form-control" asp-for="SalePrice" />
+            <span class="text-danger" asp-validation-for="SalePrice"></span>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Satış Birimi</label>
+            <select class="form-select" asp-for="SaleCurrency">
+                @foreach (Currency c in Enum.GetValues(typeof(Currency)))
+                {
+                    <option value="@((int)c)">@c</option>
+                }
+            </select>
+            <span class="text-danger" asp-validation-for="SaleCurrency"></span>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+        <button type="submit" class="btn btn-primary">@btnText</button>
+    </div>
+</form>

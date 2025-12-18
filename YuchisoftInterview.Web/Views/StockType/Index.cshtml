@@ -1,0 +1,88 @@
+﻿@model List<YuchisoftTest.Domain.Entity.StockType>
+@{
+    ViewData["Title"] = "Stok Türleri";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">Stok Türü Listesi</h3>
+    <button id="btnOpenCreate" class="btn btn-primary">+Stok Türü Ekle</button>
+</div>
+
+<table id="stockTypesTable" class="table table-bordered table-sm align-middle">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Stok Türü</th>
+            <th>Stok Sınıfı</th>
+            <th>Durum</th>
+            <th style="width:180px;">İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var x in Model)
+        {
+            <tr data-id="@x.Id">
+                <td>@x.Id</td>
+                <td>@x.Name</td>
+                <td>@x.StockClass</td>
+                <td class="@(x.IsActive ? "text-success fw-semibold" : "text-danger fw-semibold")">
+                            @(x.IsActive ? "Aktif" : "İnaktif")
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-warning crud-edit" data-id="@x.Id">Düzenle</button>
+                    <button class="btn btn-sm btn-danger crud-delete" data-id="@x.Id">Sil</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- upsert modal -->
+<div class="modal fade" id="saveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Stok Türü</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="saveModalBody">
+                <!-- partial -->
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            CrudPage.init({
+                tableSelector: '#stockTypesTable',
+                modalSelector: '#saveModal',
+                modalBodySelector: '#saveModalBody',
+                createBtnSelector: '#btnOpenCreate',
+
+                getModalUrl: '@Url.Action("SaveModal", "StockType")',
+                saveUrl: '@Url.Action("SaveStockType", "StockType")',
+                deleteUrl: '@Url.Action("DeleteStockType", "StockType")',
+
+                mapToRow: (data) => [
+                    data.id,              
+                    data.name,
+                    data.stockClass,
+                    data.isActive
+                        ? '<span class="text-success fw-semibold">Aktif</span>'
+                        : '<span class="text-danger fw-semibold">İnaktif</span>',
+                    CrudPage.actionsHtml(data.id)
+                ],
+
+                createToastText: 'Kayıt eklendi',
+                updateToastText: 'Kayıt güncellendi',
+                deleteToastText: 'Silindi'
+            });
+        });
+    </script>
+}
+
